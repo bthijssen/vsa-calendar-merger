@@ -1,0 +1,23 @@
+{
+  "name": "vsa-calendar",
+  "version": "1.0.0",
+  "description": "Combine public iCal feeds into one Google Calendar",
+  "scripts": {
+    "sync": "tsx src/index.ts",
+    "sync:dry": "tsx src/index.ts --dry-run",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module",
+  "dependencies": {
+    "@googleapis/calendar": "^20.1.0",
+    "google-auth-library": "^11.3.4",
+    "ical.js": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "private": true
+}
