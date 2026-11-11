@@ -1,6 +1,14 @@
-# VSA calendar combiner
+# VSA Calendar Merger
 
-Combines public iCal feeds (VSA Eindhoven, VSA Nijmegen, ...) into one Google Calendar owned by the organisation. A GitHub Actions job runs every 30 minutes and keeps the target calendar in sync.
+Combines public iCal feeds into one Google Calendar owned by the organisation. A GitHub Actions job runs every 30 minutes and keeps the target calendar in sync.
+
+Current sources (any public `.ics` feed works, including Google Calendar and Luma):
+
+| Source | Key | Feed type |
+|---|---|---|
+| VSA Eindhoven | `eindhoven` | Google Calendar |
+| VSA Nijmegen | `nijmegen` | Google Calendar |
+| VSA Amsterdam | `amsterdam` | Luma |
 
 - Every event title gets the source name as prefix, e.g. `[VSA Nijmegen] Introduction Market`.
 - Events are matched by a deterministic ID (source key + iCal UID), so runs are idempotent. Only events created by this tool are ever updated or deleted.
@@ -32,21 +40,35 @@ Add an entry to [calendars.json](calendars.json):
 
 Never commit the key file. `.gitignore` already excludes common key filenames.
 
-## Usage
+## Usage on GitHub
+
+The sync runs entirely in GitHub Actions. You don't need to run anything on your own computer.
+
+**Automatic:** the workflow in [.github/workflows/sync.yml](.github/workflows/sync.yml) runs every 30 minutes on the default branch.
+
+**Manual run:**
+
+1. Open the repository on GitHub and go to the **Actions** tab.
+2. In the left list, select **Sync calendars**.
+3. Click **Run workflow**.
+4. Optional: tick **Plan changes without writing** to do a dry run. The log then shows what would be created, updated or deleted, without changing the calendar.
+5. Click **Run workflow** again to start it.
+
+**Checking a run:** open the run in the Actions tab and expand the **Sync** step. Lines look like `[nijmegen] create=409 update=0 delete=0 unchanged=0`. A line ending in `failed:` means that source was skipped. The run then ends with a failure status.
+
+**Pausing:** in the Actions tab, open **Sync calendars**, click **⋯**, then **Disable workflow**. Re-enable it the same way.
+
+**Free minutes:** a private repository gets 2,000 Actions minutes per month. A 30-minute schedule is about 1,440 runs. Keep each run short, or switch to an hourly schedule if minutes run out. Usage is under **Settings → Billing and plans → Usage**.
+
+## Local development
+
+Only needed when changing the code.
 
 ```powershell
 npm ci
 npm test
-npm run sync:dry          # offline: downloads feeds and validates the mapping
-$env:TARGET_CALENDAR_ID = '<calendar id>'
-$env:GOOGLE_CREDENTIALS_JSON = Get-Content key.json -Raw
-npm run sync:dry          # compares with the target calendar, writes nothing
-npm run sync              # applies changes
+npm run sync:dry    # offline: downloads feeds and validates the mapping
 ```
-
-Test against a throwaway calendar first before pointing at the real one.
-
-The workflow in [.github/workflows/sync.yml](.github/workflows/sync.yml) runs every 30 minutes and can be started manually (with an optional dry-run). On a private repository the free plan includes 2,000 Actions minutes per month. A 30-minute schedule is about 1,440 runs, so keep runs short (about 1 minute) or reduce the frequency if minutes run out.
 
 ## Notes
 
