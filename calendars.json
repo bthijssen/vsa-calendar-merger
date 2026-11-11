@@ -8,5 +8,10 @@
     "key": "nijmegen",
     "name": "VSA Nijmegen",
     "icsUrl": "https://calendar.google.com/calendar/ical/htmr24fgotousgmjci901h8n24%40group.calendar.google.com/public/basic.ics"
+  },
+  {
+    "key": "amsterdam",
+    "name": "VSA Amsterdam",
+    "icsUrl": "https://api.luma.com/ics/get?entity=calendar&id=cal-VQcPtqCo047OnpZ"
   }
 ]
